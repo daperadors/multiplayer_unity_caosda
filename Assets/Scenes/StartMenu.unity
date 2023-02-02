@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 283725186}
   - component: {fileID: 283725191}
   - component: {fileID: 283725190}
+  - component: {fileID: 283725192}
   m_Layer: 5
   m_Name: MenuCanvas
   m_TagString: Untagged
@@ -266,6 +267,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 283725185}
   m_CullTransparentMesh: 1
+--- !u!114 &283725192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283725185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b2383c2921bf4646bfc882d7bcabf9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ServerButton: {fileID: 1099469879}
+  m_ClientButton: {fileID: 1580625551}
+  m_HostButton: {fileID: 1183539670}
 --- !u!1 &338848944
 GameObject:
   m_ObjectHideFlags: 0
