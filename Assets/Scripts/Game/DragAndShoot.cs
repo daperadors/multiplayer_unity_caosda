@@ -8,18 +8,20 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private Vector2 m_MinPower;
     [SerializeField] private Vector2 m_MaxPower;
 
-    TrajectoryLine m_TrajLine;
+    //private NetworkVariable<TrajectoryLine> m_TrajLine = new NetworkVariable<TrajectoryLine>(/*Vector2.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner*/);
+
+    //TrajectoryLine m_TrajLine;
     private Camera m_Camera;
     private Rigidbody2D m_Rigidbody;
-   // private Vector2 m_Force;
+    // private Vector2 m_Force;
     private Vector3 m_StartPoint;
     private Vector3 m_EndPoint;
 
-    private NetworkVariable<Vector2> m_Force = new NetworkVariable<Vector2>(Vector2.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<Vector2> m_Force = new NetworkVariable<Vector2>(/*Vector2.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner*/);
     void Start()
     {
         Physics2D.gravity = Vector2.zero;
-        m_TrajLine = GetComponent<TrajectoryLine>();
+        // m_TrajLine = GetComponent<NetworkVariable<TrajectoryLine>>();
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_Camera = Camera.main;
     }
@@ -48,7 +50,7 @@ public class DragAndShoot : NetworkBehaviour
         {
             Vector3 currentPoint = m_Camera.ScreenToWorldPoint(Input.mousePosition);
             m_StartPoint.z = 15;
-            m_TrajLine.RenderLineServerRpc(m_StartPoint, currentPoint);
+            // m_TrajLine.Value.RenderLineServerRpc(m_StartPoint, currentPoint);
         }
     }
 
@@ -71,7 +73,7 @@ public class DragAndShoot : NetworkBehaviour
                                   Mathf.Clamp(m_StartPoint.y - m_EndPoint.y, m_MinPower.y, m_MaxPower.y));
             m_Rigidbody.AddForce(m_Force.Value * m_PowerBall * m_Impulse, ForceMode2D.Impulse);
             print("Disparo2");
-            m_TrajLine.EndLineServerRpc();
+            //   m_TrajLine.Value.EndLineServerRpc();
         }
     }
 }
