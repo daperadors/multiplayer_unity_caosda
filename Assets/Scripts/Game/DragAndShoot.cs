@@ -7,10 +7,10 @@ public class DragAndShoot : NetworkBehaviour
     [SerializeField] private float m_Impulse = 2f;
     [SerializeField] private Vector2 m_MinPower;
     [SerializeField] private Vector2 m_MaxPower;
-
-    //private NetworkVariable<TrajectoryLine> m_TrajLine = new NetworkVariable<TrajectoryLine>(/*Vector2.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner*/);
+    public GameManager m_GameManager;
 
     //TrajectoryLine m_TrajLine;
+    private Player m_Player;
     private Camera m_Camera;
     private Rigidbody2D m_Rigidbody;
     // private Vector2 m_Force;
@@ -21,6 +21,7 @@ public class DragAndShoot : NetworkBehaviour
     void Start()
     {
         Physics2D.gravity = Vector2.zero;
+        m_Player = new Player(m_GameManager.players.Count+1);    
         // m_TrajLine = GetComponent<NetworkVariable<TrajectoryLine>>();
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_Camera = Camera.main;
