@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Border
   - PoolBall
+  - Agujero
+  - PoolBallRed
+  - PoolBallYellow
+  - PoolBallWhite
+  - PoolBallBlack
   layers:
   - Default
   - TransparentFX
