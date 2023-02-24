@@ -1,12 +1,11 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private int m_Turn;
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
