@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 public class DragAndShoot : MonoBehaviour
@@ -10,7 +11,7 @@ public class DragAndShoot : MonoBehaviour
     TrajectoryLine m_TrajLine;
     private Camera m_Camera;
     private Rigidbody2D m_Rigidbody;
-    private Vector2 m_Force;
+    private NetworkVariable<Vector2> m_Force = new NetworkVariable<Vector2>(/*Vector2.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner*/);
     private Vector3 m_StartPoint;
     private Vector3 m_EndPoint;
 
@@ -59,16 +60,26 @@ public class DragAndShoot : MonoBehaviour
     {
         if (m_Rigidbody.velocity == Vector2.zero)
         {
+            DisparoBolaServerRpc();
+        }
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void DisparoBolaServerRpc()
+    {
+        if (m_Rigidbody.velocity == Vector2.zero)
+        {
             m_EndPoint = m_Camera.ScreenToWorldPoint(Input.mousePosition);
             m_EndPoint.z = 15;
 
-            m_Force = new Vector2(Mathf.Clamp(m_StartPoint.x - m_EndPoint.x, m_MinPower.x, m_MaxPower.x),
+            m_Force.Value = new Vector2(Mathf.Clamp(m_StartPoint.x - m_EndPoint.x, m_MinPower.x, m_MaxPower.x),
                                   Mathf.Clamp(m_StartPoint.y - m_EndPoint.y, m_MinPower.y, m_MaxPower.y));
-            m_Rigidbody.AddForce(m_Force * m_PowerBall * m_Impulse, ForceMode2D.Impulse);
+            m_Rigidbody.AddForce(m_Force.Value * m_PowerBall * m_Impulse, ForceMode2D.Impulse);
+            print("Disparo2");
+            //   m_TrajLine.Value.EndLineServerRpc();
+            m_Rigidbody.AddForce(m_Force.Value * m_PowerBall * m_Impulse, ForceMode2D.Impulse);
             m_TrajLine.EndLine();
         }
     }
-
     private void MoveBall() {
 
         if (_canMove == true) 
