@@ -13,30 +13,13 @@ public class DragAndShoot : MonoBehaviour
     private Vector2 m_Force;
     private Vector3 m_StartPoint;
     private Vector3 m_EndPoint;
-
-
-    [SerializeField] private Camera _mainCamera;
-    public bool _canMove = false;
-    [SerializeField] private Transform _spawnPoint;
-
     void Start()
     {
-
-        BallView.OnBallWhiteEnter += SetSpawnPoint;
-     
         Physics2D.gravity = Vector2.zero;
         m_TrajLine = GetComponent<TrajectoryLine>();
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_Camera = Camera.main;
     }
-
-
-    void Update()
-    {
-        MoveBall();
-    }
-
-
     private void OnMouseDown()
     {
         if (m_Rigidbody.velocity == Vector2.zero)
@@ -53,7 +36,6 @@ public class DragAndShoot : MonoBehaviour
             m_StartPoint.z = 15;
             m_TrajLine.RenderLine(m_StartPoint, currentPoint);
         }
-        _canMove = false;
     }
     private void OnMouseUp()
     {
@@ -68,28 +50,5 @@ public class DragAndShoot : MonoBehaviour
             m_TrajLine.EndLine();
         }
     }
-
-    private void MoveBall() {
-
-        if (_canMove == true) 
-        {
-            if (Input.GetMouseButtonDown(1))
-            {
-                Vector3 worldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-                worldPosition.z = 0f;
-                transform.position = worldPosition;
-            }
-        }
-
-
-    }
-
-    public void SetSpawnPoint() {
-        _canMove = true;
-        transform.position = _spawnPoint.position;
-        this.GetComponent<Rigidbody2D>().velocity = new Vector3(0f,0f,0f);
-    }
-
-
 }
 
