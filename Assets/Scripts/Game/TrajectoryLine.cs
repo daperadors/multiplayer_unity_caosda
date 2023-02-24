@@ -1,9 +1,11 @@
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
 public class TrajectoryLine : MonoBehaviour
 {
-    private LineRenderer m_LineRenderer;
+    //private LineRenderer m_LineRenderer;
+    private LineRenderer m_LineRenderer = new LineRenderer();
     [SerializeField] private Gradient m_Color;
 
     private void Awake()
@@ -11,8 +13,8 @@ public class TrajectoryLine : MonoBehaviour
         m_LineRenderer = GetComponent<LineRenderer>();
         m_LineRenderer.colorGradient = m_Color;
     }
-
-    public void RenderLine(Vector3 startPoint, Vector3 endPoint)
+    [ServerRpc(RequireOwnership = false)]
+    public void RenderLineServerRpc(Vector3 startPoint, Vector3 endPoint)
     {
         m_LineRenderer.positionCount = 2;
 
@@ -22,8 +24,8 @@ public class TrajectoryLine : MonoBehaviour
 
         m_LineRenderer.SetPositions(points);
     }
-
-    public void EndLine()
+    [ServerRpc(RequireOwnership = false)]
+    public void EndLineServerRpc()
     {
         m_LineRenderer.positionCount = 0;
     }
