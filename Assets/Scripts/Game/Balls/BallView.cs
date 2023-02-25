@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BallView : MonoBehaviour
+public class BallView : NetworkBehaviour
 {
 
     [SerializeField] private BillarView _billarController;
