@@ -15,7 +15,7 @@ public class DragAndShoot : NetworkBehaviour
     private Vector3 m_StartPoint;
     private Vector3 m_EndPoint;
 
-
+    private GameManager m_manager;
     [SerializeField] private Camera _mainCamera;
     public bool _canMove = false;
     [SerializeField] private Transform _spawnPoint;
@@ -29,6 +29,7 @@ public class DragAndShoot : NetworkBehaviour
         //m_TrajLine = GetComponent<TrajectoryLine>();
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_Camera = Camera.main;
+        m_manager = GameObject.Find("GameController").GetComponent<GameManager>();
     }
 
     public override void OnNetworkSpawn()
@@ -47,8 +48,13 @@ public class DragAndShoot : NetworkBehaviour
 
     private void OnMouseDown()
     {
-        print("Hola");
+        print(gameObject.name);
         //if (!IsOwner) return;
+        GetMousePositionServerRpc();
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void GetMousePositionServerRpc()
+    {
         if (m_Rigidbody.velocity == Vector2.zero)
         {
             m_StartPoint = m_Camera.ScreenToWorldPoint(Input.mousePosition);
@@ -75,6 +81,7 @@ public class DragAndShoot : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void DisparoBolaServerRpc()
     {
+        if (NetworkManager.Singleton.LocalClientId == m_manager.actualPlayer.ClientId) return;
         if (m_Rigidbody.velocity == Vector2.zero)
         {
             m_EndPoint = m_Camera.ScreenToWorldPoint(Input.mousePosition);
@@ -84,6 +91,7 @@ public class DragAndShoot : NetworkBehaviour
                                   Mathf.Clamp(m_StartPoint.y - m_EndPoint.y, m_MinPower.y, m_MaxPower.y));
             m_Rigidbody.AddForce(m_Force.Value * m_PowerBall * m_Impulse, ForceMode2D.Impulse);
             print("Disparo2");
+            m_manager.EndTurn();
             
             //   m_TrajLine.Value.EndLineServerRpc();
         }

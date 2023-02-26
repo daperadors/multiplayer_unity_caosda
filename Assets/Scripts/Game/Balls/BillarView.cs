@@ -1,27 +1,27 @@
 using Mono.Cecil;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class BillarView : MonoBehaviour
+public class BillarView : NetworkBehaviour
 {
 
-    public GameObject[] _redBallsImage;
-    public GameObject[] _yellowBallsImage;
+    public List<GameObject> _redBallsImage = new List<GameObject>();
+    public List<GameObject> _yellowBallsImage = new List<GameObject>();
     public int _quantityRedBall = 0;
     public int _quantityYellowBall = 0;
-
-
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        InitializeBallsImage();
+        base.OnNetworkSpawn();
+        InitializeBallsImageClientRpc();
     }
 
-
-    private void InitializeBallsImage()
+    [ClientRpc]
+    public void InitializeBallsImageClientRpc()
     {
-
-        int iterador = _redBallsImage.Length;
+        Debug.Log("ssssss");
+        int iterador = _redBallsImage.Count;
 
         for (int x = 0; x < iterador; x++)
         {
@@ -31,15 +31,15 @@ public class BillarView : MonoBehaviour
 
     }
 
-
-    public void ActiveBalls(int id)
+    [ClientRpc]
+    public void ActiveBallsClientRpc(int id)
     {
-
+        print("Entra");
         if (id == 1)
         {
             _quantityRedBall++;
 
-            if (_quantityRedBall < _redBallsImage.Length)
+            if (_quantityRedBall < _redBallsImage.Count)
             {
                 for (int x = 0; x < _quantityRedBall; x++)
                 {
@@ -53,7 +53,7 @@ public class BillarView : MonoBehaviour
         {
             _quantityYellowBall++;
 
-            if (_quantityYellowBall < _yellowBallsImage.Length)
+            if (_quantityYellowBall < _yellowBallsImage.Count)
             {
                 for (int x = 0; x < _quantityYellowBall; x++)
                 {
@@ -65,10 +65,11 @@ public class BillarView : MonoBehaviour
 
 
     }
-
-    public void ComproveVictory()
+    [ClientRpc]
+    public void ComproveVictoryClientRpc()
     {
-        int ballsMax = _redBallsImage.Length;
+        print("Entra");
+        int ballsMax = _redBallsImage.Count;
         if (_quantityRedBall == ballsMax || _quantityYellowBall == ballsMax)
         {
             Debug.Log("MI TURNO WIN");

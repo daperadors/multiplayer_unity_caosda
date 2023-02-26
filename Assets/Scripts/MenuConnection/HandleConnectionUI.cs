@@ -13,6 +13,7 @@ public class HandleConnectionUI : NetworkBehaviour
     [SerializeField] private Button m_ServerButton;
     [SerializeField] private Button m_ClientButton;
     [SerializeField] private Button m_HostButton;
+    [SerializeField] private GameObject m_Players;
     [SerializeField] private TextMeshProUGUI m_textPlayers;
 
     private NetworkVariable<int> players = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone);
@@ -21,6 +22,7 @@ public class HandleConnectionUI : NetworkBehaviour
         players.OnValueChanged += (int previousValue, int newValue) =>
         {
             m_textPlayers.text = players.Value + "";
+            GameObject.Find("Balls").GetComponent<BillarView>().InitializeBallsImageClientRpc();
         };
     }
     void Awake()
@@ -29,16 +31,19 @@ public class HandleConnectionUI : NetworkBehaviour
         m_ServerButton.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartServer();
+            DisableButtons();
         });
 
         m_ClientButton.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartClient();
+            DisableButtons();
         });
 
         m_HostButton.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartHost();
+            DisableButtons();
         });
     }
 
@@ -46,7 +51,13 @@ public class HandleConnectionUI : NetworkBehaviour
     {
         if (!IsOwner) return;
         players.Value = NetworkManager.Singleton.ConnectedClients.Count;
-        
-
+       
+    }
+    private void DisableButtons()
+    {
+        m_ServerButton.gameObject.SetActive(false);
+        m_ClientButton.gameObject.SetActive(false);
+        m_HostButton.gameObject.SetActive(false);
+        m_Players.SetActive(true);
     }
 }

@@ -16,32 +16,37 @@ public class BallView : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag.Equals("Agujero")) {
-
+            print("si");
             if (gameObject.tag.Equals("PoolBallRed"))
             {
-                _billarController.ActiveBalls(1);
+                _billarController.ActiveBallsClientRpc(1);
                 Debug.Log("BallRed");
-                Destroy(gameObject);
+                DestroyObjectClientRpc();
             }
             else if (gameObject.tag.Equals("PoolBallYellow"))
             {
-                _billarController.ActiveBalls(2);
+                _billarController.ActiveBallsClientRpc(2);
                 Debug.Log("BallYellow");
-                Destroy(gameObject);
+                DestroyObjectClientRpc();
             }
             else if (gameObject.tag.Equals("PoolBall"))
             {
                 OnBallWhiteEnter?.Invoke();
             }
             else if (gameObject.tag.Equals("PoolBallBlack")) {
-                _billarController.ComproveVictory();
-                Destroy(gameObject);
+                _billarController.ComproveVictoryClientRpc();
+                DestroyObjectClientRpc();
             }
 
 
         }
     }
-   
+    [ClientRpc]
+    private void DestroyObjectClientRpc()
+    {
+        Destroy(gameObject);
+    }
+
 
 
 }
