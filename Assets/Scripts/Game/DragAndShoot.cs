@@ -17,14 +17,14 @@ public class DragAndShoot : NetworkBehaviour
 
     private GameManager m_manager;
     [SerializeField] private Camera _mainCamera;
-    public bool _canMove = false;
+    public NetworkVariable<bool> _canMove = new NetworkVariable<bool>();
     [SerializeField] private Transform _spawnPoint;
 
     void Start()
     {
 
         BallView.OnBallWhiteEnter += SetSpawnPoint;
-     
+        _canMove.Value = false;
         Physics2D.gravity = Vector2.zero;
         //m_TrajLine = GetComponent<TrajectoryLine>();
         m_Rigidbody = GetComponent<Rigidbody2D>();
@@ -42,7 +42,7 @@ public class DragAndShoot : NetworkBehaviour
 
     void Update()
     {
-        MoveBall();
+        MoveBallServerRpc();
     }
 
 
@@ -76,12 +76,15 @@ public class DragAndShoot : NetworkBehaviour
         //if (!IsOwner) return;
         print("Disparo1");
         DisparoBolaServerRpc();
+        print("Disparo2");
 
     }
     [ServerRpc(RequireOwnership = false)]
-    private void DisparoBolaServerRpc()
+    private void DisparoBolaServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        if (NetworkManager.Singleton.LocalClientId == m_manager.actualPlayer.ClientId) return;
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
+        Debug.Log(clientId);
+        if (clientId != GameManager.m_Instance.actualPlayer.ClientId) return;
         if (m_Rigidbody.velocity == Vector2.zero)
         {
             m_EndPoint = m_Camera.ScreenToWorldPoint(Input.mousePosition);
@@ -91,21 +94,24 @@ public class DragAndShoot : NetworkBehaviour
                                   Mathf.Clamp(m_StartPoint.y - m_EndPoint.y, m_MinPower.y, m_MaxPower.y));
             m_Rigidbody.AddForce(m_Force.Value * m_PowerBall * m_Impulse, ForceMode2D.Impulse);
             print("Disparo2");
-            m_manager.EndTurn();
+            m_manager.EndTurnClientRpc();
             
             //   m_TrajLine.Value.EndLineServerRpc();
         }
     }
-    private void MoveBall() {
+    [ServerRpc(RequireOwnership = false)]
+    private void MoveBallServerRpc(ServerRpcParams serverRpcParams = default) {
 
-        if (_canMove) 
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
+        if (clientId != GameManager.m_Instance.actualPlayer.ClientId) return;
+        if (_canMove.Value) 
         {
             if (Input.GetMouseButtonDown(1))
             {
                 Vector3 worldPosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
                 worldPosition.z = 0f;
                 transform.position = worldPosition;
-                _canMove = false;
+                _canMove.Value = false;
             }
         }
 
@@ -113,7 +119,7 @@ public class DragAndShoot : NetworkBehaviour
     }
 
     public void SetSpawnPoint() {
-        _canMove = true;
+        _canMove.Value = true;
         transform.position = _spawnPoint.position;
         this.GetComponent<Rigidbody2D>().velocity = new Vector3(0f,0f,0f);
     }

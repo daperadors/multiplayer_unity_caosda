@@ -20,7 +20,6 @@ public class BillarView : NetworkBehaviour
     [ClientRpc]
     public void InitializeBallsImageClientRpc()
     {
-        Debug.Log("ssssss");
         int iterador = _redBallsImage.Count;
 
         for (int x = 0; x < iterador; x++)
@@ -73,9 +72,11 @@ public class BillarView : NetworkBehaviour
         if (_quantityRedBall == ballsMax || _quantityYellowBall == ballsMax)
         {
             Debug.Log("MI TURNO WIN");
+            NetworkManager.Singleton.SceneManager.LoadScene("StartMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
         else
         {
+            NetworkManager.Singleton.SceneManager.LoadScene("StartMenu", UnityEngine.SceneManagement.LoadSceneMode.Single);
             Debug.Log("OTRO TURNO WIN");
         }
     }

@@ -31,19 +31,22 @@ public class HandleConnectionUI : NetworkBehaviour
         m_ServerButton.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartServer();
-            DisableButtons();
+            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+            //DisableButtons();
         });
 
         m_ClientButton.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartClient();
-            DisableButtons();
+            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+            //DisableButtons();
         });
 
         m_HostButton.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartHost();
-            DisableButtons();
+            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+            //DisableButtons();
         });
     }
 
